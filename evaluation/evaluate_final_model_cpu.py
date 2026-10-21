@@ -15,7 +15,9 @@ import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 from PIL import Image
 
-workspace = os.path.abspath(os.path.join(os.path.dirname(__file__), '..'))
+workspace = os.environ.get(
+    "PINN_WORKSPACE",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 model_dir = os.path.join(workspace, 'GM47_b1_MODFLOW')
 h5_path = os.path.join(model_dir, 'GM47_b1.h5')
 
@@ -549,8 +551,5 @@ fig.colorbar(im2, ax=axes[1], label='Head (m)')
 
 plt.tight_layout()
 plt.savefig(os.path.join(workspace, 'mid_timestep_comparison_cycle_9.png'), dpi=300)
-# Copy to artifacts directory
-artifact_plot_path = r"C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\mid_timestep_comparison_cycle_9.png"
-plt.savefig(artifact_plot_path, dpi=300)
 plt.close()
 print("Saved mid-timestep comparison heatmap successfully!", flush=True)

@@ -9,15 +9,17 @@ import flopy
 import matplotlib.pyplot as plt
 from sklearn.metrics import r2_score, mean_squared_error, mean_absolute_error
 from PIL import Image
-import sys
-sys.path.append(r'C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\scratch')
 
 plt.rcParams['font.family'] = 'Times New Roman'
 
 # Force CPU execution to prevent memory locks with other training runs
 os.environ["CUDA_VISIBLE_DEVICES"] = ""
 
-workspace = r'E:\mayank\varuna_refinement'
+# Portable workspace: set the PINN_WORKSPACE environment variable to point at the
+# folder holding the data and checkpoints; otherwise default to the repo root.
+workspace = os.environ.get(
+    "PINN_WORKSPACE",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 model_dir = os.path.join(workspace, 'GM47_b1_MODFLOW')
 h5_path = os.path.join(model_dir, 'GM47_b1.h5')
 chk_w_path = os.path.join(workspace, f'checkpoint_weights_cycle_9_saved.h5')
