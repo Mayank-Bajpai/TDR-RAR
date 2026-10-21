@@ -1,21 +1,53 @@
 import os
 import sys
 import json
+import argparse
 
-# Enable GPU training on the available GPU (pinn_gpu3 env)
-# os.environ["CUDA_VISIBLE_DEVICES"] = ""
+# ==========================================
+# 0. Portable configuration (paths & environment)
+# ==========================================
+# All machine-specific paths are supplied via command-line arguments or
+# environment variables instead of being hard-coded. Run with -h / --help.
+#   --workspace / PINN_WORKSPACE : folder holding the input data and receiving outputs
+#   --model-dir / PINN_MODEL_DIR : folder with GM47_b1.h5/.hed/.ccf
+#                                   (default: <workspace>/GM47_b1_MODFLOW)
+#   --conda-env / PINN_CONDA_ENV : conda env prefix whose Library/bin holds the CUDA
+#                                   DLLs (Windows + GPU only; leave unset otherwise)
+def _parse_cli_config():
+    parser = argparse.ArgumentParser(
+        description="TDR-RAR PINN groundwater surrogate - training pipeline")
+    parser.add_argument(
+        "--workspace", default=os.environ.get("PINN_WORKSPACE", os.getcwd()),
+        help="Directory with input data and for writing outputs "
+             "(default: $PINN_WORKSPACE or the current directory)")
+    parser.add_argument(
+        "--model-dir", default=os.environ.get("PINN_MODEL_DIR"),
+        help="Directory with GM47_b1.h5/.hed/.ccf "
+             "(default: <workspace>/GM47_b1_MODFLOW)")
+    parser.add_argument(
+        "--conda-env", default=os.environ.get("PINN_CONDA_ENV"),
+        help="Conda environment prefix whose Library/bin holds the CUDA DLLs "
+             "(Windows + GPU only; leave unset on Linux/macOS or CPU)")
+    # parse_known_args keeps the script usable when launched by tools that inject
+    # extra arguments (Jupyter, debuggers, etc.).
+    args, _ = parser.parse_known_args()
+    return args
 
-# Ensure CUDA DLLs are found by adding conda environment Library/bin to PATH and DLL directories
-conda_env_path = r"C:\Users\Shreyansh\anaconda3\envs\pinn_gpu3"
-library_bin = os.path.join(conda_env_path, "Library", "bin")
-if os.path.exists(library_bin):
-    if library_bin not in os.environ['PATH']:
-        os.environ['PATH'] = library_bin + os.pathsep + os.environ['PATH']
-    if hasattr(os, 'add_dll_directory'):
-        try:
-            os.add_dll_directory(library_bin)
-        except Exception as e:
-            print(f"Warning: Could not add DLL directory: {e}")
+CONFIG = _parse_cli_config()
+
+# On Windows with a conda GPU build, the CUDA DLLs live in <env>/Library/bin and
+# must be added to the DLL search path. No-op on Linux/macOS or CPU-only setups.
+conda_env_path = CONFIG.conda_env
+if conda_env_path:
+    library_bin = os.path.join(conda_env_path, "Library", "bin")
+    if os.path.exists(library_bin):
+        if library_bin not in os.environ.get('PATH', ''):
+            os.environ['PATH'] = library_bin + os.pathsep + os.environ.get('PATH', '')
+        if hasattr(os, 'add_dll_directory'):
+            try:
+                os.add_dll_directory(library_bin)
+            except Exception as e:
+                print(f"Warning: Could not add DLL directory: {e}")
 
 import h5py
 import numpy as np
@@ -44,9 +76,10 @@ import optuna
 # ==========================================
 # 1. Configuration & Paths
 # ==========================================
-workspace = r'E:\mayank\varuna_refinement'
-model_dir = os.path.join(workspace, 'GM47_b1_MODFLOW')
+workspace = CONFIG.workspace
+model_dir = CONFIG.model_dir or os.path.join(workspace, 'GM47_b1_MODFLOW')
 h5_path = os.path.join(model_dir, 'GM47_b1.h5')
+os.makedirs(workspace, exist_ok=True)
 
 # Force training and optimization
 run_optuna = False
@@ -1088,7 +1121,6 @@ if retrain_final:
         'pde_bwell_loss': pde_bwell_loss
     })
     df_loss.to_csv(os.path.join(workspace, 'loss_history.csv'), index=False)
-    df_loss.to_csv(r"C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\loss_history.csv", index=False)
 else:
     print("Skipping final retraining: loading saved weights...")
     m.model.load_weights(weights_path)
@@ -1116,7 +1148,6 @@ plt.grid(True, which="both", linestyle="--", alpha=0.5)
 plt.legend()
 plt.tight_layout()
 plt.savefig(os.path.join(workspace, 'loss_history.png'), dpi=300)
-plt.savefig(r"C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\loss_history.png", dpi=300)
 plt.close()
 
 # ==========================================
@@ -1196,7 +1227,6 @@ def save_scatter_plot(df, title, path):
 save_scatter_plot(cgwb_eval, 'CGWB', os.path.join(workspace, 'cgwb_comparison.png'))
 save_scatter_plot(daily_eval, 'Daily', os.path.join(workspace, 'daily_comparison.png'))
 save_scatter_plot(near_eval, 'Near Wells & Rivers', os.path.join(workspace, 'near_comparison.png'))
-save_scatter_plot(near_eval, 'Near Wells & Rivers', r"C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\near_comparison.png")
 
 # ==========================================
 # 9. Spatial head variation heatmaps
@@ -1313,7 +1343,6 @@ for idx, (ax, col_err, title) in enumerate([
 
 plt.tight_layout()
 plt.savefig(os.path.join(workspace, 'spatial_error_comparison_daily.png'), dpi=300)
-plt.savefig(r"C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\spatial_error_comparison_daily.png", dpi=300)
 plt.close()
 print("Spatial error comparison heatmap for daily observations generated successfully.")
 
@@ -1470,7 +1499,7 @@ opt_summary += f"""
 
 A side-by-side spatial comparison of the Mean Absolute Error (MAE) of MODFLOW and the PINN surrogate model predictions against daily field observations is presented below. The MAE is calculated per unique well location across all matched stress periods.
 
-![Daily Spatial MAE Error Comparison](file:///C:/Users/Shreyansh/.gemini/antigravity/brain/4c84105f-6891-40f1-92e8-beb11d6d579c/spatial_error_comparison_daily.png)
+![Daily Spatial MAE Error Comparison](spatial_error_comparison_daily.png)
 
 ### Key Observations:
 1. **Error Distribution**: The spatial error distribution shows that both MODFLOW and PINN predictions have low errors across the majority of the aquifer, with slightly higher errors localized around regions with high pumping rates and complex boundary conditions.
@@ -1502,8 +1531,6 @@ The unweighted scaled PDE groundwater loss (`pde_gw_loss`) converged to {pde_gw_
 """
 
 with open(os.path.join(workspace, 'final_report.md'), 'w', encoding='utf-8') as f:
-    f.write(opt_summary)
-with open(r"C:\Users\Shreyansh\.gemini\antigravity\brain\4c84105f-6891-40f1-92e8-beb11d6d579c\final_report.md", 'w', encoding='utf-8') as f:
     f.write(opt_summary)
 
 print("Final retraining and report generation completed successfully!")
