@@ -76,7 +76,9 @@ def create_report(output_path):
     print(f"Document successfully created at: {output_path}")
 
 if __name__ == "__main__":
-    workspace = r'E:\mayank\varuna_refinement\try_1_master'
+    workspace = os.environ.get(
+        "PINN_WORKSPACE",
+        os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
     output_dir = os.path.join(workspace, 'drop_1000', 'reports')
     os.makedirs(output_dir, exist_ok=True)
     

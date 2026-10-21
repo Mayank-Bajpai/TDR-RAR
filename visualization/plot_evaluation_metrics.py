@@ -9,7 +9,9 @@ import flopy
 
 plt.rcParams['font.family'] = 'Times New Roman'
 
-workspace = r'E:\mayank\varuna_refinement\try_1_master'
+workspace = os.environ.get(
+    "PINN_WORKSPACE",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 out_dir = os.path.join(workspace, 'drop_1000')
 
 df = pd.read_csv(os.path.join(out_dir, 'daily_dataset_modflow_drop1000.csv'))

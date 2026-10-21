@@ -5,7 +5,9 @@ import matplotlib.pyplot as plt
 import h5py
 import pyproj
 
-workspace = r'E:\mayank\varuna_refinement\try_1_master'
+workspace = os.environ.get(
+    "PINN_WORKSPACE",
+    os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 drop_dir = os.path.join(workspace, 'drop_1000')
 
 # 1. Load active cells (ibound) for the background

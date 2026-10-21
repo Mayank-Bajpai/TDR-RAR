@@ -35,7 +35,7 @@ def generate_dynamic_budget_plot(file_path, out_png):
         ax1.plot(df_pinn['Stress_Period'], df_pinn[comp], label='PINN', color='darkorange', linewidth=2.5, linestyle='--', marker='s')
         ax1.set_title(comp, fontsize=14, fontweight='bold', pad=10)
         if j == 0:
-            ax1.set_ylabel('Net Volume (m³)', fontsize=12, fontweight='bold')
+            ax1.set_ylabel('Net Volume (mÂ³)', fontsize=12, fontweight='bold')
             ax1.legend(loc='best', fontsize=11)
         ax1.grid(True, linestyle='--', alpha=0.7)
         ax1.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
@@ -49,7 +49,7 @@ def generate_dynamic_budget_plot(file_path, out_png):
         ax2.set_title(f'Difference (PINN - MODFLOW)', fontsize=12, fontweight='bold')
         ax2.set_xlabel('Stress Period', fontsize=12, fontweight='bold')
         if j == 0:
-            ax2.set_ylabel('Error Volume (m³)', fontsize=12, fontweight='bold')
+            ax2.set_ylabel('Error Volume (mÂ³)', fontsize=12, fontweight='bold')
         ax2.grid(True, linestyle='--', alpha=0.7, axis='y') 
         ax2.ticklabel_format(style='sci', axis='y', scilimits=(0,0))
         ax2.set_xticks(range(0, 21, 2))
