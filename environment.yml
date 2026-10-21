@@ -1,0 +1,35 @@
+# Conda environment for the TDR-RAR PINN groundwater surrogate.
+#
+# Usage:
+#   conda env create -f environment.yml
+#   conda activate pinn_tdr_rar
+#
+# This mirrors the native-Windows GPU setup used for the original experiments
+# (TensorFlow 2.10 + CUDA 11.2 + cuDNN 8.1 on an NVIDIA Quadro RTX 4000).
+# On Linux/macOS or CPU-only machines, omit the cudatoolkit/cudnn lines and
+# TensorFlow will fall back to CPU automatically.
+name: pinn_tdr_rar
+channels:
+  - conda-forge
+  - defaults
+dependencies:
+  - python=3.9
+  # GPU runtime (Windows/Linux with an NVIDIA GPU); safe to remove for CPU-only
+  - cudatoolkit=11.2
+  - cudnn=8.1
+  - pip
+  - pip:
+      - tensorflow==2.10.1
+      - sciann==0.7.0.1
+      - numpy==1.23.5
+      - pandas==1.5.3
+      - scipy==1.9.3
+      - scikit-learn==1.1.3
+      - h5py==3.7.0
+      - flopy==3.3.6
+      - pyproj==3.4.1
+      - matplotlib==3.6.2
+      - Pillow==9.3.0
+      - python-docx==0.8.11
+      - openpyxl==3.0.10
+      - optuna==3.1.0

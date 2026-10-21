@@ -1,0 +1,35 @@
+# TDR-RAR PINN groundwater surrogate - Python dependencies
+#
+# These versions are a known-compatible set for the SciANN + TensorFlow stack
+# used in this project. The critical constraints are:
+#   * TensorFlow 2.10.x  (last release with native-Windows GPU support, which is
+#     what the original experiments used on an NVIDIA Quadro RTX 4000)
+#   * numpy < 1.24       (required by TensorFlow 2.10)
+#   * a SciANN build compatible with tf.keras in TF 2.10
+#
+# If you install a newer TensorFlow you will likely also need a newer SciANN and
+# numpy; see docs/USAGE.md for notes on other combinations.
+
+# --- Core deep-learning / PINN stack ---
+tensorflow==2.10.1
+sciann==0.7.0.1
+numpy==1.23.5
+
+# --- Scientific / data handling ---
+pandas==1.5.3
+scipy==1.9.3
+scikit-learn==1.1.3
+h5py==3.7.0
+
+# --- Groundwater / MODFLOW I/O ---
+flopy==3.3.6
+pyproj==3.4.1
+
+# --- Plotting and reporting ---
+matplotlib==3.6.2
+Pillow==9.3.0
+python-docx==0.8.11
+openpyxl==3.0.10
+
+# --- Hyperparameter optimization ---
+optuna==3.1.0

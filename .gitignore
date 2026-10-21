@@ -1,0 +1,39 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.ipynb_checkpoints/
+.venv/
+venv/
+env/
+
+# Generated / large model artifacts (not tracked; reproduce with the scripts)
+*.h5
+*.hed
+*.ccf
+*.npz
+*.hdf5
+checkpoint_*.h5
+pinn_surrogate_weights.h5
+
+# Generated outputs
+loss_history.csv
+loss_history.png
+optuna_history.csv
+*_evaluation_results.csv
+*_comparison.png
+*_comparison.svg
+*_comparison.tif
+mid_timestep_comparison.*
+modflow_mid_head.tif
+pinn_mid_head.tif
+spatial_error_comparison_daily.*
+final_report.md
+cycle_*_eval_metrics.json
+
+# But DO keep the schema docs and the generator's own files
+!data/**
+
+# OS
+.DS_Store
+Thumbs.db
