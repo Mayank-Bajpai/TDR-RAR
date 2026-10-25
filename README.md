@@ -128,6 +128,13 @@ The expected files and their full schema are documented in
 └── well_heads_daily.csv
 ```
 
+**Reviewers / third parties:** a fully randomized, non-confidential test model
+(identical structure, no real measurements) is described in
+[`test_model/README.md`](test_model/README.md) — generate it with one command,
+or download the ready-made archive from the
+[Releases](../../releases) page, then run the pipeline against it to confirm the
+code executes without errors.
+
 ## Quickstart
 
 ```bash
