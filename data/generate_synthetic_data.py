@@ -291,14 +291,17 @@ def main():
     write_h5(os.path.join(model_dir, "GM47_b1.h5"), arrays, packages)
     print("  wrote GM47_b1.h5")
 
-    # Synthetic heads: smooth field decreasing with layer depth + mild time trend
+    # Synthetic heads: a smooth field (decreasing with depth + seasonal trend)
+    # plus a randomized perturbation, so the values are made-up/non-confidential
+    # while staying in a physically sensible range.
     yy, xx = np.mgrid[0:NROW, 0:NCOL].astype(np.float64)
     base = 95.0 + 0.01 * xx - 0.008 * yy
     heads = np.zeros((n_times, NLAY, NROW, NCOL), dtype=np.float64)
     for t in range(n_times):
         season = 1.0 * np.sin(2 * np.pi * times[t] / 365.0)
         for l in range(NLAY):
-            heads[t, l] = base - 1.5 * l + season
+            heads[t, l] = (base - 1.5 * l + season
+                           + 0.75 * rng.standard_normal((NROW, NCOL)))
     # Inactive cells carry MODFLOW's dry/no-flow sentinel
     inactive = ibound_top <= 0
     heads[:, :, inactive] = -999.99
