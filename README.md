@@ -8,6 +8,13 @@ collocation-point generation. The network is built with
 MODFLOW model of the GM-47 block while honouring the governing flow physics and
 field observations.
 
+[![Test dataset on Zenodo](https://zenodo.org/badge/DOI/10.5281/zenodo.23640456.svg)](https://doi.org/10.5281/zenodo.23640456)
+
+A fully randomized, non-confidential **test dataset** for reproducibility checks
+is archived on Zenodo at DOI
+[10.5281/zenodo.23640456](https://doi.org/10.5281/zenodo.23640456) (see
+[Data](#data)).
+
 ## Table of contents
 
 - [Features](#features)
@@ -130,10 +137,10 @@ The expected files and their full schema are documented in
 
 **Reviewers / third parties:** a fully randomized, non-confidential test model
 (identical structure, no real measurements) is described in
-[`test_model/README.md`](test_model/README.md) — generate it with one command,
-or download the ready-made archive from the
-[Releases](../../releases) page, then run the pipeline against it to confirm the
-code executes without errors.
+[`test_model/README.md`](test_model/README.md). Get it either way: generate it
+with one command, or download it from Zenodo (DOI
+[10.5281/zenodo.23640456](https://doi.org/10.5281/zenodo.23640456)). Then run the
+pipeline against it to confirm the code executes without errors.
 
 ## Quickstart
 
