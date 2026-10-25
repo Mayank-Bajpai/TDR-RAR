@@ -17,10 +17,16 @@ periods, 110 time steps, and the file/array layout documented in
 
 ## How to get it
 
+This folder already contains the parts small enough to track in git:
+`GM47_b1_MODFLOW/GM47_b1.h5` and the two `well_heads_*.csv` files. The two large
+binaries (`GM47_b1.hed` ≈ 134 MB, `GM47_b1.ccf` ≈ 39 MB) exceed GitHub's
+file-size limits and are **not** tracked here — get them either way below.
+
 ### Option A — generate it (recommended, reproducible)
 
 The generator ships in the repo and builds the complete dataset with one
-command. A fixed seed makes the output identical every time.
+command. Use **`--seed 2025`** so the output matches the files already committed
+in this folder (the generator will (re)write all five files consistently).
 
 ```bash
 pip install -r requirements.txt          # or: pip install numpy pandas h5py flopy pyproj
@@ -50,12 +56,17 @@ pipeline at the unzipped folder as above.
 ```
 test_model/
 ├── GM47_b1_MODFLOW/
-│   ├── GM47_b1.h5     (~7 MB)    grid + hydraulic properties + boundary packages
-│   ├── GM47_b1.hed    (~134 MB)  binary heads   (flopy HeadFile, double precision)
-│   └── GM47_b1.ccf    (~39 MB)   binary budget  (flopy CellBudgetFile, double)
-├── well_heads_CGWB.csv
-└── well_heads_daily.csv
+│   ├── GM47_b1.h5     (~7 MB)    grid + hydraulic properties + boundary packages   [tracked here]
+│   ├── GM47_b1.hed    (~134 MB)  binary heads   (flopy HeadFile, double precision)  [generate / Release]
+│   └── GM47_b1.ccf    (~39 MB)   binary budget  (flopy CellBudgetFile, double)      [generate / Release]
+├── well_heads_CGWB.csv                                                              [tracked here]
+└── well_heads_daily.csv                                                             [tracked here]
 ```
+
+`[tracked here]` files are committed in this folder. `[generate / Release]`
+files are too large for GitHub to store in the repository (its browser uploader
+rejects files over 25 MB and the repository blocks files over 100 MB), so they
+come from the generator (Option A, `--seed 2025`) or the Release (Option B).
 
 See [`../data/README.md`](../data/README.md) for the full field-by-field schema.
 
