@@ -40,16 +40,28 @@ export PINN_WORKSPACE=$PWD/test_model     # Windows: setx PINN_WORKSPACE "%CD%\t
 python training/optuna_tdr_rar_pinn_training.py --workspace ./test_model
 ```
 
-### Option B — download the ready-made archive
+### Option B — download it from Zenodo
 
-A pre-built archive, `TDR-RAR_test_model.zip` (~82 MB), is attached to the
-repository's **[Releases](../../releases)** page. Download, unzip, and point the
-pipeline at the unzipped folder as above.
+The complete dataset is archived on Zenodo with a citable DOI:
 
-> **Why a Release and not a tracked file?** The binary head file
-> (`GM47_b1.hed`) is ~134 MB, which exceeds GitHub's 100 MB per-file limit for
-> files committed into the repository. Release assets have no such limit, so the
-> ready-made copy lives there; Option A reproduces it locally either way.
+**https://doi.org/10.5281/zenodo.23640456** &nbsp;(DOI `10.5281/zenodo.23640456`, resolves to the latest version)
+
+Download the files and arrange them as the pipeline expects — the three binaries
+inside a `GM47_b1_MODFLOW/` subfolder, the two CSVs beside it:
+
+```
+<workspace>/
+├── GM47_b1_MODFLOW/{GM47_b1.h5, GM47_b1.hed, GM47_b1.ccf}
+├── well_heads_CGWB.csv
+└── well_heads_daily.csv
+```
+
+Then point the pipeline at `<workspace>` as in Option A. (Zenodo stores files
+flat, so you create the `GM47_b1_MODFLOW/` folder yourself after downloading.)
+
+> **Why Zenodo and not tracked in git?** The binary head file (`GM47_b1.hed`) is
+> ~134 MB, which exceeds GitHub's 100 MB per-file limit, so the full dataset is
+> archived on Zenodo instead; Option A reproduces it locally either way.
 
 ## What's in the dataset
 
@@ -57,16 +69,17 @@ pipeline at the unzipped folder as above.
 test_model/
 ├── GM47_b1_MODFLOW/
 │   ├── GM47_b1.h5     (~7 MB)    grid + hydraulic properties + boundary packages   [tracked here]
-│   ├── GM47_b1.hed    (~134 MB)  binary heads   (flopy HeadFile, double precision)  [generate / Release]
-│   └── GM47_b1.ccf    (~39 MB)   binary budget  (flopy CellBudgetFile, double)      [generate / Release]
+│   ├── GM47_b1.hed    (~134 MB)  binary heads   (flopy HeadFile, double precision)  [generate / Zenodo]
+│   └── GM47_b1.ccf    (~39 MB)   binary budget  (flopy CellBudgetFile, double)      [generate / Zenodo]
 ├── well_heads_CGWB.csv                                                              [tracked here]
 └── well_heads_daily.csv                                                             [tracked here]
 ```
 
-`[tracked here]` files are committed in this folder. `[generate / Release]`
+`[tracked here]` files are committed in this folder. `[generate / Zenodo]`
 files are too large for GitHub to store in the repository (its browser uploader
 rejects files over 25 MB and the repository blocks files over 100 MB), so they
-come from the generator (Option A, `--seed 2025`) or the Release (Option B).
+come from the generator (Option A, `--seed 2025`) or Zenodo (Option B,
+DOI [10.5281/zenodo.23640456](https://doi.org/10.5281/zenodo.23640456)).
 
 See [`../data/README.md`](../data/README.md) for the full field-by-field schema.
 
